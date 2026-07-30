@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_URL || 'https://fl-platform-api-kg2m.onrender.com'
 
 let _token = null
 
@@ -34,7 +34,7 @@ export function stopKeepAlive() {
   }
 }
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
   try {
@@ -60,7 +60,7 @@ export async function apiFetch(path, options = {}, maxRetries = 1, delayMs = 150
   let lastErr
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const res = await fetchWithTimeout(`${API_BASE}${path}`, { ...options, headers }, 10000)
+      const res = await fetchWithTimeout(`${API_BASE}${path}`, { ...options, headers }, 60000)
       if (!res.ok) {
         const body = await res.json().catch(() => ({ detail: res.statusText }))
         throw new Error(body.detail || `API error ${res.status}`)

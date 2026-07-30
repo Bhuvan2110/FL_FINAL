@@ -27,7 +27,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: CORS_ORIGINS
-        value: "https://fl-platform-ui-8vqt.onrender.com,http://localhost:5173"
+        value: "https://fl-platform-ui-8vqt.onrender.com,https://fedlearn-os.web.app,https://fedlearn-os.firebaseapp.com,http://localhost:5173"
 
   - type: redis
     name: fl-redis

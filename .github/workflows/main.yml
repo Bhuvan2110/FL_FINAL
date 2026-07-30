@@ -108,9 +108,9 @@ jobs:
       - name: Build Frontend
         working-directory: frontend
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://mock.supabase.co' }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'mock-anon-key' }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://mock-api.onrender.com' }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://gxrnjyurzoegbhljkyda.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cm5qeXVyem9lZ2JobGpreWRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTE1NjksImV4cCI6MjA5NjgyNzU2OX0.OBxEaI6uXkOuprC41uUIjq-0LeWyY8NejA3fouSsNEk' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://fl-platform-api-kg2m.onrender.com' }}
         run: npm run build
 
       - name: Deploy to Firebase Hosting

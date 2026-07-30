@@ -20,7 +20,10 @@ class Settings(BaseSettings):
     mlflow_tracking_uri: str = "http://localhost:5000"
 
     # CORS — stored as comma-separated string in .env
-    cors_origins_raw: str = Field(default="http://localhost:5173", validation_alias="CORS_ORIGINS")
+    cors_origins_raw: str = Field(
+        default="http://localhost:5173,https://fl-platform-ui-8vqt.onrender.com,https://fedlearn-os.web.app,https://fedlearn-os.firebaseapp.com",
+        validation_alias="CORS_ORIGINS"
+    )
 
     @property
     def cors_origins(self) -> list[str]:
@@ -28,7 +31,7 @@ class Settings(BaseSettings):
     # Environment
     environment: str = "development"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 @lru_cache()
