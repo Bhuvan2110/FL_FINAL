@@ -19,42 +19,85 @@ export default function App() {
     // Wake the backend from Render free-tier sleep (runs in parallel with auth check)
     wakeBackend()
 
+    // Default fallback user for instant accessibility
+    const fallbackUser = {
+      id: 'mock-google-id',
+      email: 'google-user@example.com',
+      name: 'Google User',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces',
+      role: 'user',
+      token: 'mock-google-token',
+    }
+
     // Check existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setAuthToken(session.access_token)
         const u = session.user
-        setUser({
+        const userData = {
           id: u.id,
           email: u.email,
           name: u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User',
           avatar: u.user_metadata?.avatar_url || null,
           role: u.app_metadata?.role || 'user',
           token: session.access_token,
-        })
+        }
+        setUser(userData)
+        localStorage.setItem('fl_user', JSON.stringify(userData))
+      } else {
+        const savedUserStr = localStorage.getItem('fl_user')
+        if (savedUserStr) {
+          try {
+            const savedUser = JSON.parse(savedUserStr)
+            setAuthToken(savedUser.token || 'mock-google-token')
+            setUser(savedUser)
+          } catch (_) {
+            setAuthToken(fallbackUser.token)
+            setUser(fallbackUser)
+          }
+        } else {
+          setAuthToken(fallbackUser.token)
+          setUser(fallbackUser)
+        }
       }
       setLoading(false)
     }).catch(() => {
-      // If Supabase is unreachable, still allow the app to load
+      const savedUserStr = localStorage.getItem('fl_user')
+      if (savedUserStr) {
+        try {
+          const savedUser = JSON.parse(savedUserStr)
+          setAuthToken(savedUser.token || 'mock-google-token')
+          setUser(savedUser)
+        } catch (_) {
+          setAuthToken(fallbackUser.token)
+          setUser(fallbackUser)
+        }
+      } else {
+        setAuthToken(fallbackUser.token)
+        setUser(fallbackUser)
+      }
       setLoading(false)
     })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
+      if (event === 'SIGNED_OUT') {
+        localStorage.removeItem('fl_user')
         setUser(null)
         setAuthToken(null)
       } else if (session) {
         setAuthToken(session.access_token)
         const u = session.user
-        setUser({
+        const userData = {
           id: u.id,
           email: u.email,
           name: u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'User',
           avatar: u.user_metadata?.avatar_url || null,
           role: u.app_metadata?.role || 'user',
           token: session.access_token,
-        })
+        }
+        setUser(userData)
+        localStorage.setItem('fl_user', JSON.stringify(userData))
       }
     })
 
@@ -71,26 +114,30 @@ export default function App() {
     return () => stopKeepAlive()
   }, [user])
 
-  const handleLogin = (userData) => { setUser(userData) }
+  const handleLogin = (userData) => {
+    setAuthToken(userData.token || 'mock-google-token')
+    setUser(userData)
+    localStorage.setItem('fl_user', JSON.stringify(userData))
+  }
 
   const handleSkipLogin = () => {
-    // Create a guest user with local token
-    setAuthToken('guest-token')
-    setUser({
+    const guestUser = {
       id: 'guest',
       email: 'guest@demo.local',
       name: 'Guest User',
       role: 'guest',
       token: 'guest-token',
-    })
+    }
+    setAuthToken('guest-token')
+    setUser(guestUser)
+    localStorage.setItem('fl_user', JSON.stringify(guestUser))
   }
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut()
-    } catch (_) {
-      // Ignore sign-out errors (e.g. guest user)
-    }
+    } catch (_) {}
+    localStorage.removeItem('fl_user')
     setUser(null)
     setAuthToken(null)
   }

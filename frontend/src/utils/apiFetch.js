@@ -1,13 +1,20 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'https://fl-platform-api-kg2m.onrender.com'
 
-let _token = null
+let _token = typeof window !== 'undefined' ? (localStorage.getItem('fl_auth_token') || 'mock-google-token') : 'mock-google-token'
 
 export function setAuthToken(token) {
-  _token = token
+  _token = token || 'mock-google-token'
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('fl_auth_token', token)
+    } else {
+      localStorage.setItem('fl_auth_token', 'mock-google-token')
+    }
+  }
 }
 
 export function getAuthToken() {
-  return _token
+  return _token || (typeof window !== 'undefined' ? localStorage.getItem('fl_auth_token') : null) || 'mock-google-token'
 }
 
 // Ping /health to wake Render free-tier from sleep
@@ -55,7 +62,8 @@ export async function apiFetch(path, options = {}, maxRetries = 1, delayMs = 150
     'Content-Type': 'application/json',
     ...(options.headers || {}),
   }
-  if (_token) headers['Authorization'] = `Bearer ${_token}`
+  const token = getAuthToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
 
   let lastErr
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -85,7 +93,8 @@ export async function apiFetch(path, options = {}, maxRetries = 1, delayMs = 150
 
 export async function apiUpload(path, formData, maxRetries = 1, delayMs = 2000) {
   const headers = {}
-  if (_token) headers['Authorization'] = `Bearer ${_token}`
+  const token = getAuthToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
 
   let lastErr
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
