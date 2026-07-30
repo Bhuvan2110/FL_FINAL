@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "963671708563",
+    "project_id": "fedlearn-os",
+    "storage_bucket": "fedlearn-os.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963671708563:android:e5bda60b0dcaf3d45a0e66",
+        "android_client_info": {
+          "package_name": "com.sbhuvan.fedlearnos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963671708563-a40v9lpk2l6g8q1ckjtktsrjgahap7sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjezJHPZJ0Bkn0-ObR-pBNuiUtLAOzbxQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963671708563-a40v9lpk2l6g8q1ckjtktsrjgahap7sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
