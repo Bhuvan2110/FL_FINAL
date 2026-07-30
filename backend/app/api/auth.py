@@ -58,6 +58,10 @@ class SignupRequest(BaseModel):
     password: str
 
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
 @router.post("/login")
@@ -109,11 +113,11 @@ async def signup(body: SignupRequest, request: Request):
 
 
 @router.post("/refresh")
-async def refresh_token(refresh_token: str):
+async def refresh_token(body: RefreshRequest):
     async with httpx.AsyncClient() as client:
         resp = await client.post(
             f"{settings.supabase_url}/auth/v1/token?grant_type=refresh_token",
-            json={"refresh_token": refresh_token},
+            json={"refresh_token": body.refresh_token},
             headers={"apikey": settings.supabase_anon_key, "Content-Type": "application/json"},
             timeout=15,
         )

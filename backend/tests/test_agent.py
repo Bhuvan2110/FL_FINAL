@@ -1,5 +1,5 @@
 import json
-import asyncio
+import pytest
 from app.api.agent import agent_chat, AgentChatRequest, ChatMessage
 
 class MockSupabase:
@@ -60,7 +60,8 @@ class MockSupabase:
     def storage(self):
         return self.Storage(self)
 
-def test_agent_chat_flow():
+@pytest.mark.anyio
+async def test_agent_chat_flow():
     model_data = {
         "weights": [0.5, -0.2],
         "bias": 0.1,
@@ -81,14 +82,13 @@ def test_agent_chat_flow():
 
     try:
         user = {"id": "user-123"}
-        loop = asyncio.get_event_loop()
 
         # 1. Welcome and choose model
         req = AgentChatRequest(
             model_id=None,
             messages=[ChatMessage(role="user", content="hello")]
         )
-        res = loop.run_until_complete(agent_chat(req, user=user))
+        res = await agent_chat(req, user=user)
         assert "select one of the models" in res["message"]
         assert len(res["options"]) == 1
         assert res["options"][0]["value"] == "model-1"
@@ -100,7 +100,7 @@ def test_agent_chat_flow():
             current_feature=None,
             collected_features={}
         )
-        res = loop.run_until_complete(agent_chat(req, user=user))
+        res = await agent_chat(req, user=user)
         assert "sl.no" in res["message"]
         assert res["current_feature"] == "sl.no"
 
@@ -114,7 +114,7 @@ def test_agent_chat_flow():
             current_feature="sl.no",
             collected_features={}
         )
-        res = loop.run_until_complete(agent_chat(req, user=user))
+        res = await agent_chat(req, user=user)
         assert "Age" in res["message"]
         assert res["current_feature"] == "Age"
         assert res["collected_features"]["sl.no"] == 1.0
@@ -129,7 +129,7 @@ def test_agent_chat_flow():
             current_feature="Age",
             collected_features={"sl.no": 1.0}
         )
-        res = loop.run_until_complete(agent_chat(req, user=user))
+        res = await agent_chat(req, user=user)
         assert "Prediction Result" in res["message"]
         assert res["prediction"] is not None
         assert res["prediction"]["class_label"] in ["Positive", "Negative"]

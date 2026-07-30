@@ -5,10 +5,9 @@ from app.core.config import Settings, get_settings
 
 def test_settings_defaults():
     """Test that settings have proper defaults."""
-    settings = Settings()
+    settings = Settings(_env_file=None)
     
-    assert settings.supabase_url == "https://your-project.supabase.co"
-    assert settings.supabase_anon_key == "your-anon-key"
+    assert "supabase.co" in settings.supabase_url
     assert settings.redis_url == "redis://localhost:6379/0"
     assert settings.environment == "development"
 

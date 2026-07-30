@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     # Environment
     environment: str = "development"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore", "populate_by_name": True}
 
 
 @lru_cache()

@@ -29,7 +29,7 @@ def test_health_endpoint():
 
 def test_cors_headers():
     """Test CORS headers are present in responses."""
-    response = client.options("/health")
+    response = client.options("/health", headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "GET"})
     
     # FastAPI with CORSMiddleware adds these
     assert response.status_code in [200, 204]
@@ -68,13 +68,13 @@ def test_openapi_schema():
     assert schema["info"]["version"] == "1.0.0"
 
 
-@patch('app.main.socket.create_connection')
+@patch('socket.create_connection')
 def test_mlflow_connection_failure(mock_socket):
     """Test that MLflow connection failure is handled gracefully."""
     mock_socket.side_effect = Exception("Connection failed")
     
     # Recreate app with patched socket (simulates startup)
-    with patch('app.main.socket.create_connection', side_effect=Exception("Connection failed")):
+    with patch('socket.create_connection', side_effect=Exception("Connection failed")):
         # App should still be functional
         response = client.get("/health")
         assert response.status_code == 200

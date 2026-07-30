@@ -23,7 +23,7 @@ def mock_httpx():
 
 def test_login_success(mock_httpx):
     """Test successful login."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "access_token": "test_token",
@@ -48,7 +48,7 @@ def test_login_success(mock_httpx):
 
 def test_login_invalid_credentials(mock_httpx):
     """Test login with invalid credentials."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 401
     
     mock_httpx.return_value.__aenter__.return_value.post = AsyncMock(return_value=mock_response)
@@ -63,7 +63,7 @@ def test_login_invalid_credentials(mock_httpx):
 
 def test_signup_success(mock_httpx):
     """Test successful signup."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 201
     mock_response.json.return_value = {"id": "user123"}
     
@@ -80,7 +80,7 @@ def test_signup_success(mock_httpx):
 
 def test_signup_failure(mock_httpx):
     """Test signup failure."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 400
     
     mock_httpx.return_value.__aenter__.return_value.post = AsyncMock(return_value=mock_response)
@@ -95,7 +95,7 @@ def test_signup_failure(mock_httpx):
 
 def test_refresh_token_success(mock_httpx):
     """Test successful token refresh."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "access_token": "new_token",
@@ -112,7 +112,7 @@ def test_refresh_token_success(mock_httpx):
 
 def test_refresh_token_invalid(mock_httpx):
     """Test refresh with invalid token."""
-    mock_response = AsyncMock()
+    mock_response = MagicMock()
     mock_response.status_code = 401
     
     mock_httpx.return_value.__aenter__.return_value.post = AsyncMock(return_value=mock_response)
