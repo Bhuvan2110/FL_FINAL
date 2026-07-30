@@ -45,10 +45,17 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# ── CORS & Security Headers Middleware ────────────────────────────────────────
+cors_allowed_origins = list(dict.fromkeys([
+    "https://fedlearn-os.web.app",
+    "https://fedlearn-os.firebaseapp.com",
+    "https://fl-platform-ui-8vqt.onrender.com",
+    "http://localhost:5173",
+    "http://localhost:3000",
+] + settings.cors_origins))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=cors_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
