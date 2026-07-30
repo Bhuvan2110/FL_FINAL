@@ -45,27 +45,38 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# ── CORS ──────────────────────────────────────────────────────────────────────
+# ── CORS & Security Headers Middleware ────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Security Headers Middleware ───────────────────────────────────────────────
+
 @app.middleware("http")
-async def security_headers(request: Request, call_next):
+async def cors_and_security_middleware(request: Request, call_next):
+    origin = request.headers.get("origin", "*")
+    if request.method == "OPTIONS":
+        from fastapi.responses import Response
+        res = Response(status_code=204)
+        res.headers["Access-Control-Allow-Origin"] = origin if origin != "*" else "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        res.headers["Access-Control-Allow-Headers"] = "*"
+        res.headers["Access-Control-Allow-Credentials"] = "true"
+        return res
+
     response = await call_next(request)
+    if origin and origin != "*":
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    else:
+        response.headers["Access-Control-Allow-Origin"] = "*"
+
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
-    if settings.environment == "production":
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-        response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
-        )
     return response
 
 # ── Routers ───────────────────────────────────────────────────────────────────
