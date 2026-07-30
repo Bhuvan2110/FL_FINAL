@@ -56,6 +56,7 @@ cors_allowed_origins = list(dict.fromkeys([
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_allowed_origins,
+    allow_origin_regex=r"https://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
