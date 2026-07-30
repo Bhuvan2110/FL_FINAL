@@ -1,4 +1,3 @@
-import pytest
 import json
 import asyncio
 from app.api.agent import agent_chat, AgentChatRequest, ChatMessage
