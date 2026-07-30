@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import { apiFetch } from '../utils/apiFetch'
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend, Cell, RadarChart,
-  PolarGrid, PolarAngleAxis, Radar,
+  Tooltip, ResponsiveContainer, Legend, Cell,
 } from 'recharts'
 import { BarChart3, Download, RefreshCw, AlertCircle, TrendingUp, Shield, Target } from 'lucide-react'
 

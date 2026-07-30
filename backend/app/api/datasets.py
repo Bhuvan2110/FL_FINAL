@@ -32,6 +32,7 @@ async def upload_dataset(file: UploadFile = File(...), user: dict = Depends(get_
             r.insert(0, str(idx + 1))
         # Re-serialize content to keep the uploaded file in sync
         import csv
+        import io
         output = io.StringIO()
         writer = csv.writer(output)
         writer.writerow(headers)

@@ -77,7 +77,7 @@ jobs:
     steps:
       - name: Trigger Render Deploy
         env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK || '' }}
         run: |
           if [ -n "$RENDER_DEPLOY_HOOK" ]; then
             curl -X POST "$RENDER_DEPLOY_HOOK"
@@ -108,16 +108,17 @@ jobs:
       - name: Build Frontend
         working-directory: frontend
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://mock.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'mock-anon-key' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://mock-api.onrender.com' }}
         run: npm run build
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FEDLEARN_OS }}'
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FEDLEARN_OS || '' }}
           channelId: live
           projectId: fedlearn-os
+
 

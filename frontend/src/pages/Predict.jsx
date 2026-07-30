@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { apiFetch, apiUpload } from '../utils/apiFetch'
-import { Zap, Upload, ChevronRight, Download, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
+import { Zap, Upload, Download, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
 
 export default function Predict() {
   const [models, setModels] = useState([])
@@ -125,7 +125,7 @@ export default function Predict() {
                 className="input-field font-mono text-xs resize-none"
                 placeholder='{"age": 45, "glucose": 120, "bmi": 28.5, ...}'
                 onChange={e => {
-                  try { setFeatures(JSON.parse(e.target.value)) } catch {}
+                  try { setFeatures(JSON.parse(e.target.value)) } catch { /* invalid JSON ignored until valid */ }
                 }}
               />
               <button onClick={handleSinglePredict} disabled={loading} className="btn-primary">

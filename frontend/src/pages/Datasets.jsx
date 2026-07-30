@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { apiUpload, apiFetch } from '../utils/apiFetch'
-import { Upload, Database, Eye, Trash2, FileSpreadsheet, AlertCircle, CheckCircle2, Loader2, User } from 'lucide-react'
+import { Upload, Database, Eye, Trash2, FileSpreadsheet, AlertCircle, Loader2, User } from 'lucide-react'
 
 function ColumnBadge({ col }) {
   const isNum = col.dtype === 'numeric'
@@ -41,7 +41,7 @@ export default function Datasets() {
     }
   }, [])
 
-  useEffect(() => { loadDatasets() }, [])
+  useEffect(() => { loadDatasets() }, [loadDatasets])
 
   const handleFile = async (file) => {
     if (!file) return

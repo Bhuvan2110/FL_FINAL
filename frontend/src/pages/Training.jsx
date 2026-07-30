@@ -6,7 +6,7 @@ import { apiFetch } from '../utils/apiFetch'
 import LiveChart from '../components/LiveChart'
 import {
   Brain, Play, Settings, AlertCircle, Loader2,
-  CheckCircle2, Clock, ChevronDown, ChevronUp, Shield, RefreshCw
+  CheckCircle2, Shield, RefreshCw
 } from 'lucide-react'
 
 const ALGORITHMS = [
@@ -36,7 +36,6 @@ export default function Training() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [activeExp, setActiveExp] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
 
   const loadExperiments = () => {
     apiFetch('/training/list')

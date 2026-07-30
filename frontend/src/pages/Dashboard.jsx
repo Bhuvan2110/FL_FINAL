@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { apiFetch } from '../utils/apiFetch'
 import {
-  Brain, Database, BarChart3, CheckCircle2, Clock,
+  Brain, BarChart3, CheckCircle2,
   TrendingUp, Activity, RefreshCw, AlertCircle, Cpu
 } from 'lucide-react'
 

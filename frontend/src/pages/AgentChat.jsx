@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { apiFetch } from '../utils/apiFetch'
-import { Send, Bot, User, RefreshCw, Zap, AlertCircle, Loader2, Sparkles, Sliders } from 'lucide-react'
+import { Send, Bot, User, RefreshCw, AlertCircle, Loader2, Sparkles, Sliders } from 'lucide-react'
 
 export default function AgentChat() {
   const [messages, setMessages] = useState([
@@ -49,7 +49,7 @@ export default function AgentChat() {
       .catch(err => {
         setError('Failed to load models: ' + err.message)
       })
-  }, [])
+  }, [selectedModel])
 
   const sendMessage = async (text, val = null) => {
     if (!text && !val) return

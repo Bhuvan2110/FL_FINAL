@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Database, Brain, Zap, BarChart3,
   LogOut, Lock, ChevronRight, MessageSquare
@@ -14,7 +14,6 @@ const NAV_ITEMS = [
 ]
 
 export default function Sidebar({ user, onLogout }) {
-  const location = useLocation()
 
   // Display name: prefer Google name, fallback to email
   const displayName = user?.name || user?.email?.split('@')[0] || 'User'

@@ -65,9 +65,6 @@ async def agent_chat(body: AgentChatRequest, user: dict = Depends(get_current_us
         from app.api.predict import list_available_models
         models = await list_available_models(user)
         
-        options = [m["id"] for m in models]
-        options_labels = [f"{m['algorithm'].upper()} (Model: {m['id'][:8]}...)" for m in models]
-        
         welcome_text = (
             "Hello! I am your FL Predictive Analytics AI Agent. 🤖\n\n"
             "I can guide you through running predictions using our trained Federated Learning models. "
