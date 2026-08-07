@@ -28,7 +28,6 @@ async def get_current_user(
             "role": payload.get("role", "user"),
             "token": token,
         }
-
     # Fast bypass for guest/mock tokens when running completely locally/offline
     if token == "guest-token":
         return {

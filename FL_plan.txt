@@ -1,0 +1,807 @@
+Federated Learning for
+Privacy-Preserving Predictive
+Analytics
+14-Day Website Development Plan
+Supabase · FastAPI · React · Render · AES-256-GCM · FL Algorithms
+
+14 Days
+
+5 Models
+
+AES-256-GCM
+
+Supabase
+
+Render
+
+Sprint total
+
+FL algorithms
+
+Encryption
+
+Database
+
+Deployment
+
+PHASE OVERVIEW
+Setup
+
+FL Train
+
+Security
+
+Predict
+
+UI/UX
+
+Deploy
+
+Phase
+
+Days
+
+Focus
+
+Key Technologies
+
+Foundation
+
+1–2
+
+Supabase setup, dataset ingestion, preprocessing
+
+Supabase DB/Storage, FastAPI, Docker
+
+FL Training
+
+3–5
+
+FedAvg, FedProx, SCAFFOLD, DP-SGD baseline
+
+Pure Python ML, Celery, Supabase Realtime
+
+Security
+
+6–8
+
+Auth, AES-256-GCM, RSA-2048, SecAgg, audit logs
+
+Supabase Auth, RBAC, TLS, RLS
+
+Prediction
+
+9–10
+
+Inference API, batch predict, metrics engine
+
+Platt scaling, ROC/AUC, feature importance
+
+UI/UX
+
+11–12
+
+React frontend, live charts, comparison dashboard
+
+React, Recharts, Supabase JS, Tailwind
+
+Deploy
+
+13–14
+
+MLflow, Prometheus, Grafana, CI/CD, production
+
+Render, render.yaml, GitHub Actions
+
+Generated June 10, 2026 · Super Admin: sbhuvan847@gmail.com
+
+Days 1–2
+
+PHASE 1 — FOUNDATION & SUPABASE SETUP
+DAY 1
+
+Foundation
+
+Supabase
+
+FastAPI
+
+Render
+
+Project bootstrap, Supabase schema & Render config
+Create Supabase project; get URL + anon +…
+
+Design SQL schema: users, experiments, mo…
+
+Initialize FastAPI + supabase-py; connect…
+
+Create Render Web Service; set all enviro…
+
+Write render.yaml; configure auto-deploy …
+
+Set up Supabase Row Level Security (RLS) …
+
+✓ DELIVERABLE:
+
+DAY 2
+
+FastAPI live on Render; Supabase tables + RLS enforced
+
+Foundation
+
+CSV Upload
+
+Supabase Storage
+
+Normalization
+
+Dataset upload, preprocessing & Supabase Storage
+CSV upload API → store in Supabase Storag…
+
+From-scratch preprocessing: min-max norma…
+
+Column profiler: dtype, missing%, unique …
+
+Train/Val/Test split logic (stratified fo…
+
+GET /dataset/preview — first 20 rows + st…
+
+Bucket policy: auth-only access; signed U…
+
+✓ DELIVERABLE:
+
+CSV in Supabase Storage; metadata in DB; preview API live
+
+Days 3–5
+
+PHASE 2 — FEDERATED LEARNING TRAINING
+DAY 3
+
+FL Training
+
+FedAvg
+
+Central
+
+Zero ML libs
+
+Celery
+
+FedAvg + Central Training baseline (from scratch)
+Logistic Regression: sigmoid, cross-entro…
+
+Simulate N FL clients with IID + non-IID …
+
+FedAvg: weighted average of client model …
+
+Central Training: same model on full data…
+
+Save round metrics (loss, accuracy) to Su…
+
+Celery async task; progress via Supabase …
+
+✓ DELIVERABLE:
+
+DAY 4
+
+FedAvg + Central run; round metrics stored; live Realtime feed
+
+FL Training
+
+FedProx
+
+SCAFFOLD
+
+Non-IID
+
+Comparison
+
+FedProx & SCAFFOLD algorithms
+FedProx: add proximal term u*||w - w_glob…
+
+SCAFFOLD: server/client control variates …
+
+Hyperparameter store in Supabase: LR, rou…
+
+Algorithm comparison runner: 3 FL algorit…
+
+Tag each Supabase experiment row with alg…
+
+Celery chains for parallel multi-algorith…
+
+✓ DELIVERABLE:
+
+3 FL algorithms selectable; multi-run comparison data in Supabase
+
+Federated Learning for Privacy-Preserving Predictive Analytics
+
+Page 2 · Supabase + Render · 14-Day Plan
+
+DAY 5
+
+FL Training
+
+DP-SGD
+
+Epsilon-Delta
+
+Moments Acct
+
+Privacy
+
+Differential Privacy — DP-SGD & privacy budget tracker
+DP-SGD: gradient clipping (clip norm C) +…
+
+Privacy budget: epsilon + delta per round…
+
+Store epsilon consumed per round in Supab…
+
+Privacy-utility curve: multiple epsilon v…
+
+Comparison: FL+DP vs FL-only vs Central a…
+
+GET /experiments/compare returns JSON for…
+
+✓ DELIVERABLE:
+
+DP-SGD + epsilon budget tracked; privacy-utility data ready
+
+Days 6–8
+
+PHASE 3 — SECURITY & END-TO-END ENCRYPTION
+DAY 6
+
+Security
+
+Supabase Auth
+
+JWT
+
+RBAC
+
+Super Admin
+
+Supabase Auth + JWT + 3-tier RBAC
+Supabase Auth sign-in; extract JWT for AP…
+
+3-tier RBAC: super_admin (sbhuvan847@gmai…
+
+Seed super_admin claim via Supabase Edge …
+
+FastAPI dependency: verify Supabase JWT, …
+
+RLS policies: admin sees all experiments;…
+
+Login rate-limit: 5 attempts / 15 min via…
+
+✓ DELIVERABLE:
+
+DAY 7
+
+Supabase Auth live; sbhuvan847@gmail.com auto-promoted; RLS enforced
+
+Security
+
+AES-256-GCM
+
+RSA-2048-OAEP
+
+SecAgg
+
+E2E
+
+AES-256-GCM + RSA-2048-OAEP hybrid encryption
+Hybrid encryption: RSA-2048-OAEP-SHA256 w…
+
+Encrypt FL gradient payloads in transit (…
+
+Model weights encrypted at rest: AES-256-…
+
+SecAgg stub: pairwise additive masking be…
+
+Server RSA keypair; public key via GET /s…
+
+Per-session AES key exchange on every new…
+
+✓ DELIVERABLE:
+
+DAY 8
+
+All gradient payloads encrypted; model weights secure in Supabase
+
+Security
+
+Audit Trail
+
+TLS
+
+CSP
+
+Pytest Security
+
+Audit logs, TLS hardening & security tests
+INSERT-only audit_logs table in Supabase …
+
+Log: failed logins, role escalation attem…
+
+Render auto-TLS; HSTS + CSP + CORS header…
+
+Input sanitisation; parameterised Supabas…
+
+Security pytest: JWT expiry, role escalat…
+
+Privacy report API: epsilon, data access …
+
+✓ DELIVERABLE:
+
+Audit trail immutable in Supabase; TLS enforced; security tests green
+
+PHASE 4 — PREDICTION ENGINE
+
+Federated Learning for Privacy-Preserving Predictive Analytics
+
+Days 9–10
+
+Page 3 · Supabase + Render · 14-Day Plan
+
+DAY 9
+
+Prediction
+
+Inference
+
+Batch CSV
+
+Platt Scaling
+
+Confidence
+
+Inference API — single & batch predictions
+Load FL global model from Supabase Storag…
+
+POST /predict/single — single-row JSON in…
+
+POST /predict/batch — CSV upload, returns…
+
+Platt scaling calibration from scratch fo…
+
+Model switcher: predict with any of 5 alg…
+
+Prediction history stored in Supabase pre…
+
+✓ DELIVERABLE:
+
+DAY 10
+
+Single + batch prediction APIs live on Render with Supabase storage
+
+Prediction
+
+ROC/AUC
+
+Confusion Matrix
+
+Feature Importance
+
+F1
+
+Metrics engine — ROC, AUC, F1 & feature importance
+Feature importance: |w_i| magnitude from …
+
+Confusion matrix from scratch: TP, TN, FP…
+
+ROC curve + AUC; PR curve for imbalanced …
+
+Store all metrics per model+experiment in…
+
+GET /metrics/compare?models=fedavg,fedpro…
+
+Privacy-utility chart data: accuracy vs e…
+
+✓ DELIVERABLE:
+
+All metrics in Supabase; 5-model comparison endpoint ready for charts
+
+Days 11–12
+
+PHASE 5 — REACT UI / UX
+DAY 11
+
+UI/UX
+
+React
+
+Supabase JS
+
+Realtime
+
+WebSocket
+
+React frontend — auth, upload & live training monitor
+Login page: Supabase Auth UI + one-click …
+
+Dataset upload: drag-drop CSV to Supabase…
+
+Training config: algorithm selector, hype…
+
+Live training: Supabase Realtime subscrip…
+
+Encryption status badge: shows AES key ex…
+
+Sidebar nav: Dashboard, Datasets, Train, …
+
+✓ DELIVERABLE:
+
+DAY 12
+
+UI/UX
+
+Auth + training UI live; Supabase Realtime charts; deployed to Render
+
+Comparison Page
+
+Recharts
+
+ROC
+
+Feature Importance
+
+Prediction UI, model comparison & export
+Prediction form: dynamic fields from data…
+
+Batch predict: CSV upload -> results tabl…
+
+Model comparison: accuracy, F1, AUC, epsi…
+
+Convergence chart: overlaid loss curves f…
+
+Confusion matrix heatmap + feature import…
+
+Export: predictions CSV + metrics JSON vi…
+
+✓ DELIVERABLE:
+
+Full research dashboard live; 5-model comparison all working
+
+PHASE 6 — OBSERVABILITY & DEPLOYMENT
+
+Federated Learning for Privacy-Preserving Predictive Analytics
+
+Days 13–14
+
+Page 4 · Supabase + Render · 14-Day Plan
+
+DAY 13
+
+Deploy
+
+MLflow
+
+Prometheus
+
+Grafana Cloud
+
+Pytest
+
+MLflow, Prometheus, Grafana & test suite
+MLflow tracking on Render: log params, me…
+
+Prometheus /metrics: requests/sec, traini…
+
+Grafana Cloud free tier via Prometheus re…
+
+Pytest: unit tests for all 5 algorithms, …
+
+Integration test: full pipeline CSV -> tr…
+
+Security test: JWT expiry, role escalatio…
+
+✓ DELIVERABLE:
+
+DAY 14
+
+MLflow + Prometheus + Grafana wired; test suite >=85% coverage green
+
+Deploy
+
+render.yaml
+
+GitHub Actions
+
+Production
+
+Seeds
+
+CI/CD, render.yaml & production launch
+render.yaml: FastAPI Web Service, React S…
+
+GitHub Actions CI: lint => pytest => buil…
+
+Render auto-TLS; custom domain config; HS…
+
+Supabase daily backups enabled; pg_dump c…
+
+Seed script: demo users, sample dataset, …
+
+README, Swagger /docs, .env.example, arch…
+
+✓ DELIVERABLE:
+
+Full platform live on Render; CI/CD green; all 5 models healthy
+
+Federated Learning for Privacy-Preserving Predictive Analytics
+
+Page 5 · Supabase + Render · 14-Day Plan
+
+COMPLETE TECH STACK
+Layer
+
+Technology
+
+Purpose
+
+Hosted on
+
+Database
+
+Supabase PostgreSQL
+
+Experiments, metrics, users, audit logs
+
+Supabase Cloud
+
+Storage
+
+Supabase Storage
+
+CSV datasets, encrypted model weights
+
+Supabase Cloud
+
+Realtime
+
+Supabase Realtime
+
+Live training progress (WebSocket)
+
+Supabase Cloud
+
+Auth
+
+Supabase Auth + JWT
+
+Login, RBAC, token management
+
+Supabase Cloud
+
+Backend
+
+FastAPI + Python
+
+REST API, ML training orchestration
+
+Render Web Service
+
+Async
+
+Celery + Redis
+
+Background FL training jobs
+
+Render Worker
+
+ML Engine
+
+Pure Python (no ML libs)
+
+FedAvg, FedProx, SCAFFOLD, DP-SGD
+
+Render Worker
+
+Encryption
+
+AES-256-GCM + RSA-2048E2E gradient + weight encryption
+
+Backend
+
+Frontend
+
+React + Vite + Tailwind
+
+Dashboard, charts, prediction UI
+
+Render Static Site
+
+Charts
+
+Recharts
+
+ROC, convergence, feature importance
+
+Frontend
+
+Tracking
+
+MLflow
+
+Experiment param + metric logging
+
+Render Web Service
+
+Metrics
+
+Prometheus + Grafana Cloud
+System health + FL training panels
+
+Render + Cloud
+
+CI/CD
+
+GitHub Actions
+
+GitHub
+
+Lint, test, build, deploy on push
+
+MODEL COMPARISON SUMMARY
+Model
+
+Accuracy
+
+Privacy (epsilon)
+
+Convergence
+
+Non-IID handling
+
+Supabase table
+
+Central Training
+
+~95%
+
+None (raw data)
+
+Fastest
+
+N/A
+
+experiments
+
+FedAvg
+
+~87%
+
+No DP
+
+Moderate
+
+Degrades
+
+experiments
+
+FedProx
+
+~89%
+
+No DP
+
+Stable
+
+Better
+
+experiments
+
+SCAFFOLD
+
+~91%
+
+No DP
+
+Fewer rounds
+
+Best FL
+
+experiments
+
+FL + DP-SGD
+
+~80%
+
+epsilon tracked
+
+Slower
+
+Moderate
+
+privacy_budget
+
+SUPABASE DATABASE SCHEMA
+Table
+
+Key columns
+
+Purpose
+
+RLS rule
+
+users
+
+id, email, role, created_at
+
+User accounts + roles
+
+Users see own row only
+
+experiments
+
+id, algorithm, dataset_id, user_id, status
+
+FL + Central training runs
+
+Admin: all; User: own
+
+rounds
+
+experiment_id, round_num, loss, accuracy
+
+Per-round training metrics
+
+Follows experiment RLS
+
+models
+
+experiment_id, weights_path, version
+
+Model weights in Storage
+
+Admin: all; User: own
+
+predictions
+
+model_id, input_hash, output, confidence
+
+Inference results history
+
+User sees own only
+
+metrics
+
+experiment_id, accuracy, f1, auc, precision
+
+Evaluation metrics per model
+
+Public read (no PII)
+
+privacy_budget
+
+experiment_id, round_num, epsilon, delta
+
+DP-SGD budget consumed
+
+Follows experiment RLS
+
+datasets
+
+id, user_id, filename, storage_path, cols
+
+Uploaded CSV metadata
+
+User sees own only
+
+audit_logs
+
+user_id, action, resource, ip, timestamp
+
+Immutable security audit trail
+
+INSERT only via trigger
+
+All FL algorithms (FedAvg, FedProx, SCAFFOLD, DP-SGD) implemented from mathematical first principles — zero external ML
+libraries. Super Admin account: sbhuvan847@gmail.com auto-seeded on first run. Supabase RLS enforces data isolation per user.
+
+Federated Learning for Privacy-Preserving Predictive Analytics
+
+Page 6 · Supabase + Render · 14-Day Plan
+
+
