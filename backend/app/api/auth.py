@@ -72,6 +72,7 @@ async def login(body: LoginRequest, request: Request):
 
     # Attempt Supabase Auth first if configured
     supabase_auth_success = False
+    supabase_explicit_fail = False
     data = {}
     try:
         async with httpx.AsyncClient() as client:
@@ -84,6 +85,8 @@ async def login(body: LoginRequest, request: Request):
         if resp.status_code == 200:
             data = resp.json()
             supabase_auth_success = True
+        elif resp.status_code in (400, 401, 403):
+            supabase_explicit_fail = True
     except Exception:
         pass
 
@@ -101,6 +104,11 @@ async def login(body: LoginRequest, request: Request):
             "token_type": "bearer",
             "user": user_info,
         }
+
+    # If Supabase explicitly rejected credentials
+    if supabase_explicit_fail:
+        _log_audit(None, "login_failed", "auth", ip, {"email": body.email})
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     # Fallback / Direct JWT issue (for local testing, demo users, or when Supabase is offline)
     if body.password and len(body.password) >= 4:
