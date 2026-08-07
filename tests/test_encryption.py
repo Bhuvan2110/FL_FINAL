@@ -1,4 +1,11 @@
-"""Tests for AES-256-GCM + RSA-2048-OAEP encryption."""
+import sys
+from pathlib import Path
+
+# Ensure backend directory is in sys.path
+backend_path = str(Path(__file__).resolve().parent.parent / "backend")
+if backend_path not in sys.path:
+    sys.path.insert(0, backend_path)
+
 from app.core.security import (
     generate_rsa_keypair, export_public_key_pem, load_public_key_pem,
     rsa_encrypt, rsa_decrypt,
