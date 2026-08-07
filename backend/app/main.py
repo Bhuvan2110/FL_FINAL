@@ -1,12 +1,13 @@
 """
 FastAPI application entry point.
 """
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api import agent, auth, datasets, metrics, metrics_exporter, predict, training
 from app.core.config import get_settings
-from app.api import auth, datasets, training, predict, metrics, metrics_exporter, agent
 
 settings = get_settings()
 

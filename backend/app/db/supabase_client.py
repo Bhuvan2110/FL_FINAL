@@ -3,15 +3,17 @@ Supabase client — initialized from env settings.
 Uses the service-role key for server-side operations.
 If Supabase URL is offline or invalid, falls back to a local SQLite database and local folder storage.
 """
+import json
 import os
 import socket
-import json
-import uuid
 import sqlite3
 import threading
-from urllib.parse import urlparse
+import uuid
 from functools import lru_cache
-from supabase import create_client, Client
+from urllib.parse import urlparse
+
+from supabase import Client, create_client
+
 from app.core.config import get_settings
 
 # --- SQLite Mock Database Setup ---
@@ -199,7 +201,7 @@ class LocalMockQueryBuilder:
                     cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = ?", (rec["id"],))
                     row = dict(cursor.fetchone())
                     for k in json_cols:
-                        if k in row and row[k]:
+                        if row.get(k):
                             try:
                                 row[k] = json.loads(row[k])
                             except Exception:
@@ -215,7 +217,7 @@ class LocalMockQueryBuilder:
                     if k in json_cols and not isinstance(v, (str, type(None))):
                         rec[k] = json.dumps(v)
                 
-                set_clause = ", ".join([f"{k} = ?" for k in rec.keys()])
+                set_clause = ", ".join([f"{k} = ?" for k in rec])
                 vals = list(rec.values())
                 
                 where_clause = ""
@@ -259,7 +261,7 @@ class LocalMockQueryBuilder:
                 
                 for row in rows:
                     for k in json_cols:
-                        if k in row and row[k]:
+                        if row.get(k):
                             try:
                                 row[k] = json.loads(row[k])
                             except Exception:
@@ -367,7 +369,7 @@ def is_supabase_reachable(url: str) -> bool:
 
 # --- Export Client Getters ---
 
-@lru_cache()
+@lru_cache
 def get_supabase() -> Client:
     s = get_settings()
     if not is_supabase_reachable(s.supabase_url):
@@ -381,7 +383,7 @@ def get_supabase() -> Client:
     return create_client(s.supabase_url, s.supabase_service_role_key)
 
 
-@lru_cache()
+@lru_cache
 def get_supabase_anon() -> Client:
     """Anon client for auth operations."""
     s = get_settings()

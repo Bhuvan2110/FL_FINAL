@@ -1,7 +1,8 @@
 """
 Datasets API — CSV upload to Supabase Storage + preprocessing.
 """
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+
 from app.api.dependencies import get_current_user
 from app.db.supabase_client import get_supabase
 from app.ml.preprocessing import parse_csv, profile_columns
@@ -48,7 +49,7 @@ async def upload_dataset(file: UploadFile = File(...), user: dict = Depends(get_
             storage_path, content, {"content-type": "text/csv", "upsert": "true"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Storage upload failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Storage upload failed: {e!s}")
 
     # Save metadata to DB (includes uploader's display name)
     result = sb.table("datasets").insert({

@@ -1,5 +1,7 @@
 import json
+
 from app.tasks.celery_app import run_training_task
+
 
 class MockSupabase:
     def __init__(self, dataset_bytes):
@@ -79,19 +81,19 @@ class MockSupabase:
 def test_categorical_training_and_prediction():
     # CSV with categorical columns Sex, ChestPainType and target HeartDisease
     csv_content = (
-        "Age,Sex,ChestPainType,HeartDisease\n"
-        "40,M,ATA,0\n"
-        "49,F,NAP,1\n"
-        "37,M,NAP,0\n"
-        "48,F,ASY,1\n"
-        "54,M,TA,0\n"
-    ).encode()
+        b"Age,Sex,ChestPainType,HeartDisease\n"
+        b"40,M,ATA,0\n"
+        b"49,F,NAP,1\n"
+        b"37,M,NAP,0\n"
+        b"48,F,ASY,1\n"
+        b"54,M,TA,0\n"
+    )
 
     mock_sb = MockSupabase(csv_content)
     
     # Mock supabase client get_supabase in both sc and ap
-    import app.db.supabase_client as sc
     import app.api.predict as ap
+    import app.db.supabase_client as sc
     
     old_sc_sb = sc.get_supabase
     old_ap_sb = ap.get_supabase
@@ -134,7 +136,7 @@ def test_categorical_training_and_prediction():
         assert model_data["encoders"]["ChestPainType"] == ["ASY", "ATA", "NAP", "TA"]
         
         # Test predictions using predict endpoints
-        from app.api.predict import predict_single, SinglePredictRequest
+        from app.api.predict import SinglePredictRequest, predict_single
         
         # M should map to 1.0, ATA to 1.0
         req = SinglePredictRequest(

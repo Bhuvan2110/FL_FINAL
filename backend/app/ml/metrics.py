@@ -5,7 +5,6 @@ recall, feature importance, Platt scaling.
 """
 import math
 
-
 # ── Confusion Matrix ──────────────────────────────────────────────────────────
 
 def confusion_matrix(y_true: list[int], y_pred: list[int]) -> dict:
@@ -90,7 +89,7 @@ def pr_curve(y_true: list[int], y_scores: list[float]) -> dict:
 
 # ── Feature Importance ────────────────────────────────────────────────────────
 
-def feature_importance(weights: list[float], feature_names: list[str] = None) -> list[dict]:
+def feature_importance(weights: list[float], feature_names: list[str] | None = None) -> list[dict]:
     """
     Feature importance from logistic regression weights: |w_i|.
     Normalized to sum to 1.
@@ -152,7 +151,7 @@ def full_evaluation(
     y_pred: list[int],
     y_scores: list[float],
     weights: list[float],
-    feature_names: list[str] = None,
+    feature_names: list[str] | None = None,
 ) -> dict:
     """Compute all metrics in one shot."""
     cm = confusion_matrix(y_true, y_pred)

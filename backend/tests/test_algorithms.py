@@ -1,14 +1,28 @@
 """Tests for all 5 FL/ML algorithms."""
 import math
-from app.ml.logistic_regression import sigmoid, binary_cross_entropy, predict_proba, init_weights
-from app.ml.fl_algorithms import run_fedavg, run_fedprox, run_scaffold, run_central, weighted_average
-from app.ml.differential_privacy import run_dpsgd, clip_gradient, compute_epsilon
-from app.ml.preprocessing import (
-    parse_csv, min_max_normalize,
-    stratified_split, partition_iid, partition_non_iid,
-)
-from app.ml.metrics import confusion_matrix, f1_score, roc_curve, feature_importance
 
+from app.ml.differential_privacy import clip_gradient, compute_epsilon, run_dpsgd
+from app.ml.fl_algorithms import (
+    run_central,
+    run_fedavg,
+    run_fedprox,
+    run_scaffold,
+    weighted_average,
+)
+from app.ml.logistic_regression import (
+    binary_cross_entropy,
+    init_weights,
+    predict_proba,
+    sigmoid,
+)
+from app.ml.metrics import confusion_matrix, f1_score, feature_importance, roc_curve
+from app.ml.preprocessing import (
+    min_max_normalize,
+    parse_csv,
+    partition_iid,
+    partition_non_iid,
+    stratified_split,
+)
 
 # ── Sample Data ──────────────────────────────────────────────────────────────[...]
 
@@ -40,7 +54,7 @@ def test_init_weights():
 
 
 def test_predict_proba_range():
-    X, y = make_data(50)
+    X, _y = make_data(50)
     w, b = init_weights(4)
     probs = predict_proba(w, b, X)
     assert all(0.0 <= p <= 1.0 for p in probs)
@@ -50,9 +64,9 @@ def test_predict_proba_range():
 
 def test_fedavg_runs():
     X, y = make_data(100)
-    _, scalers = min_max_normalize(X)
+    _, _scalers = min_max_normalize(X)
     clients = partition_iid(X, y, n_clients=3)
-    history, weights, bias = run_fedavg(clients, n_rounds=5, lr=0.05, local_epochs=2)
+    history, weights, _bias = run_fedavg(clients, n_rounds=5, lr=0.05, local_epochs=2)
     assert len(history) == 5
     assert all("accuracy" in r for r in history)
     assert len(weights) == 4
@@ -93,7 +107,7 @@ def test_scaffold_runs():
 
 def test_central_runs():
     X, y = make_data(100)
-    history, weights, bias = run_central(X, y, n_rounds=5, lr=0.05, epochs_per_round=2)
+    history, weights, _bias = run_central(X, y, n_rounds=5, lr=0.05, epochs_per_round=2)
     assert len(history) == 5
     assert len(weights) == 4
 
@@ -115,7 +129,7 @@ def test_dpsgd_runs():
 def test_gradient_clipping():
     grad_w = [3.0, 4.0]
     grad_b = 0.0
-    clipped_w, clipped_b = clip_gradient(grad_w, grad_b, clip_norm=1.0)
+    clipped_w, _clipped_b = clip_gradient(grad_w, grad_b, clip_norm=1.0)
     norm = math.sqrt(sum(g**2 for g in clipped_w))
     assert norm <= 1.0 + 1e-9
 
@@ -160,7 +174,7 @@ def test_feature_importance_normalized():
 
 def test_min_max_normalize():
     data = [[0.0, 10.0], [1.0, 20.0], [2.0, 30.0]]
-    norm, scalers = min_max_normalize(data)
+    norm, _scalers = min_max_normalize(data)
     assert norm[0][0] == 0.0
     assert norm[2][0] == 1.0
 
@@ -168,9 +182,9 @@ def test_min_max_normalize():
 def test_stratified_split_maintains_ratio():
     X, y = make_data(200)
     splits = stratified_split(X, y)
-    X_train, y_train = splits["train"]
-    X_val, y_val = splits["val"]
-    X_test, y_test = splits["test"]
+    _X_train, y_train = splits["train"]
+    _X_val, y_val = splits["val"]
+    _X_test, y_test = splits["test"]
     total = len(y_train) + len(y_val) + len(y_test)
     assert abs(total - 200) <= 2  # allow rounding
 

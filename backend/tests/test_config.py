@@ -1,5 +1,6 @@
 """Tests for application configuration."""
 from unittest.mock import patch
+
 from app.core.config import Settings, get_settings
 
 

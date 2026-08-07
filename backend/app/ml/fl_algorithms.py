@@ -3,10 +3,15 @@ Federated Learning algorithms — pure Python, zero ML libraries.
 Implements: FedAvg, FedProx, SCAFFOLD, Central Training.
 """
 from app.ml.logistic_regression import (
-    train_local, compute_gradients, sgd_step, predict_proba,
-    binary_cross_entropy, compute_accuracy, predict, init_weights,
+    binary_cross_entropy,
+    compute_accuracy,
+    compute_gradients,
+    init_weights,
+    predict,
+    predict_proba,
+    sgd_step,
+    train_local,
 )
-
 
 # ── Helpers ───────────────────────────────────────────────────────────────[...]
 
@@ -34,8 +39,8 @@ def run_central(
     n_rounds: int = 20,
     lr: float = 0.05,
     epochs_per_round: int = 5,
-    X_val: list = None,
-    y_val: list = None,
+    X_val: list | None = None,
+    y_val: list | None = None,
 ) -> list[dict]:
     """Train on all data centrally — baseline comparison."""
     n_features = len(X[0])
@@ -63,8 +68,8 @@ def run_fedavg(
     n_rounds: int = 20,
     lr: float = 0.01,
     local_epochs: int = 5,
-    X_val: list = None,
-    y_val: list = None,
+    X_val: list | None = None,
+    y_val: list | None = None,
 ) -> tuple[list[dict], list[float], float]:
     """
     FedAvg: McMahan et al. 2017.
@@ -146,8 +151,8 @@ def run_fedprox(
     lr: float = 0.01,
     mu: float = 0.1,
     local_epochs: int = 5,
-    X_val: list = None,
-    y_val: list = None,
+    X_val: list | None = None,
+    y_val: list | None = None,
 ) -> tuple[list[dict], list[float], float]:
     """
     FedProx: Li et al. 2020.
@@ -203,8 +208,8 @@ def run_scaffold(
     n_rounds: int = 20,
     lr: float = 0.01,
     local_epochs: int = 5,
-    X_val: list = None,
-    y_val: list = None,
+    X_val: list | None = None,
+    y_val: list | None = None,
 ) -> tuple[list[dict], list[float], float]:
     """
     SCAFFOLD: Karimireddy et al. 2020.

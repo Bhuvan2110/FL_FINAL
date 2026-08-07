@@ -2,9 +2,11 @@
 Prediction API — single & batch inference with Platt-scaled confidence.
 """
 import json
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from pydantic import BaseModel
 from typing import Any
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from pydantic import BaseModel
+
 from app.api.dependencies import get_current_user
 from app.db.supabase_client import get_supabase
 from app.ml.logistic_regression import predict_proba

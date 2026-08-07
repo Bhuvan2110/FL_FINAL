@@ -3,12 +3,11 @@ From-scratch preprocessing: min-max normalization, column profiling,
 stratified train/val/test split. Zero external ML libraries.
 """
 import csv
+import hashlib
 import io
 import math
 import random
-import hashlib
 from typing import Any
-
 
 # ── CSV Parsing ───────────────────────────────────────────────────────────────
 

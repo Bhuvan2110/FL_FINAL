@@ -1,6 +1,9 @@
 import json
+
 import pytest
-from app.api.agent import agent_chat, AgentChatRequest, ChatMessage
+
+from app.api.agent import AgentChatRequest, ChatMessage, agent_chat
+
 
 class MockSupabase:
     def __init__(self, model_data):

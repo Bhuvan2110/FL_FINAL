@@ -2,14 +2,14 @@
 AES-256-GCM + RSA-2048-OAEP hybrid encryption.
 No external ML libraries — pure Python cryptography.
 """
-import os
 import base64
-import jwt
-from datetime import datetime, timedelta, timezone
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import hashes, serialization
+import os
+from datetime import UTC, datetime, timedelta
 
+import jwt
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 # ── RSA Key Management ────────────────────────────────────────────────────────
 
@@ -143,8 +143,8 @@ def get_server_public_key_pem() -> str:
 def create_access_token(data: dict, secret_key: str, expires_delta: timedelta | None = None) -> str:
     """Create a signed JWT access token."""
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(hours=24))
-    to_encode.update({"exp": expire, "iat": datetime.now(timezone.utc)})
+    expire = datetime.now(UTC) + (expires_delta or timedelta(hours=24))
+    to_encode.update({"exp": expire, "iat": datetime.now(UTC)})
     return jwt.encode(to_encode, secret_key, algorithm="HS256")
 
 

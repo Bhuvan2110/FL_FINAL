@@ -1,12 +1,13 @@
 """
 Auth API — Supabase Auth integration, RBAC, rate-limiting, audit logging.
 """
-from fastapi import APIRouter, HTTPException, Request, Depends, status
-from pydantic import BaseModel, EmailStr
 import httpx
-from app.core.config import get_settings
-from app.core.security import get_server_public_key_pem, create_access_token
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from pydantic import BaseModel, EmailStr
+
 from app.api.dependencies import get_current_user, require_admin
+from app.core.config import get_settings
+from app.core.security import create_access_token, get_server_public_key_pem
 from app.db.supabase_client import get_supabase
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -32,7 +33,7 @@ def _check_rate_limit(ip: str):
     _login_attempts[ip] = attempts
 
 
-def _log_audit(user_id: str | None, action: str, resource: str, ip: str, detail: dict = None):
+def _log_audit(user_id: str | None, action: str, resource: str, ip: str, detail: dict | None = None):
     try:
         sb = get_supabase()
         sb.table("audit_logs").insert({

@@ -2,7 +2,9 @@
 Celery app + Redis broker + FL training tasks.
 """
 import json
+
 from celery import Celery
+
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -30,14 +32,17 @@ def run_training_task(self, experiment_id: str, config: dict):
     Updates experiment status and pushes round metrics to Supabase.
     """
     from app.db.supabase_client import get_supabase
-    from app.ml.preprocessing import (
-        parse_csv, min_max_normalize, stratified_split,
-        partition_iid, partition_non_iid,
-    )
-    from app.ml.fl_algorithms import run_fedavg, run_fedprox, run_scaffold, run_central
     from app.ml.differential_privacy import run_dpsgd
+    from app.ml.fl_algorithms import run_central, run_fedavg, run_fedprox, run_scaffold
     from app.ml.logistic_regression import predict, predict_proba
     from app.ml.metrics import full_evaluation
+    from app.ml.preprocessing import (
+        min_max_normalize,
+        parse_csv,
+        partition_iid,
+        partition_non_iid,
+        stratified_split,
+    )
 
     sb = get_supabase()
     algorithm = config.get("algorithm", "fedavg")
@@ -103,7 +108,7 @@ def run_training_task(self, experiment_id: str, config: dict):
             
             if not is_numeric:
                 # Collect unique non-empty categories
-                unique_cats = sorted(list(set(v.strip() for v in col_vals if v.strip() != "")))
+                unique_cats = sorted({v.strip() for v in col_vals if v.strip() != ""})
                 encoders[col_name] = unique_cats
         
         # Now construct X_raw with encoding applied
@@ -222,6 +227,6 @@ def run_training_task(self, experiment_id: str, config: dict):
         sb.table("experiments").update({"status": "completed"}).eq("id", experiment_id).execute()
         return {"status": "completed", "experiment_id": experiment_id, "metrics": eval_result}
 
-    except Exception as e:
+    except Exception:
         sb.table("experiments").update({"status": "failed"}).eq("id", experiment_id).execute()
-        raise e
+        raise

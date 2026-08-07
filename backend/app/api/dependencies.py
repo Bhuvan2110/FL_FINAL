@@ -1,9 +1,10 @@
 """
 JWT dependency — verifies Supabase-issued JWT and extracts user + role.
 """
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import httpx
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 from app.core.config import get_settings
 from app.core.security import decode_access_token
 
@@ -112,7 +113,7 @@ async def get_current_user(
             
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Could not validate credentials: {str(e)} (URL: {settings.supabase_url})",
+            detail=f"Could not validate credentials: {e!s} (URL: {settings.supabase_url})",
         )
 
 

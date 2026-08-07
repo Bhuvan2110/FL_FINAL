@@ -2,8 +2,10 @@
 Training API — trigger FL experiments, monitor status, compare results.
 """
 import uuid
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
+
 from app.api.dependencies import get_current_user
 from app.db.supabase_client import get_supabase
 
@@ -55,6 +57,7 @@ async def start_training(
     # Dispatch task: check if Redis is running first to avoid Celery hangs
     import socket
     from urllib.parse import urlparse
+
     from app.core.config import get_settings
     
     settings = get_settings()
@@ -76,7 +79,7 @@ async def start_training(
             sb.table("experiments").update({"celery_task_id": task.id}).eq("id", experiment_id).execute()
             return {"experiment_id": experiment_id, "task_id": task.id, "status": "pending"}
         except Exception as e:
-            print(f"⚠️ Celery dispatch failed despite Redis online ({str(e)}). Falling back to background thread.")
+            print(f"⚠️ Celery dispatch failed despite Redis online ({e!s}). Falling back to background thread.")
             redis_available = False
 
     if not redis_available:

@@ -2,8 +2,14 @@
 Prometheus metrics exporter.
 Exposes /metrics endpoint with FL-specific gauges and counters.
 """
-from prometheus_client import Counter, Gauge, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from fastapi import APIRouter, Response
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    Gauge,
+    Histogram,
+    generate_latest,
+)
 
 router = APIRouter(tags=["observability"])
 

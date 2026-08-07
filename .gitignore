@@ -19,6 +19,8 @@ dist/
 build/
 *.egg
 .pytest_cache/
+.coverage
+.ruff_cache/
 
 # Node / Frontend
 frontend/node_modules/

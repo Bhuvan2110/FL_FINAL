@@ -1,10 +1,16 @@
 """Tests for AES-256-GCM + RSA-2048-OAEP encryption."""
 from app.core.security import (
-    generate_rsa_keypair, export_public_key_pem, load_public_key_pem,
-    rsa_encrypt, rsa_decrypt,
-    generate_aes_key, aes_encrypt, aes_decrypt,
-    hybrid_encrypt, hybrid_decrypt,
+    aes_decrypt,
+    aes_encrypt,
+    export_public_key_pem,
+    generate_aes_key,
+    generate_rsa_keypair,
     get_server_public_key_pem,
+    hybrid_decrypt,
+    hybrid_encrypt,
+    load_public_key_pem,
+    rsa_decrypt,
+    rsa_encrypt,
 )
 
 
@@ -34,7 +40,7 @@ def test_rsa_roundtrip():
 
 
 def test_rsa_pem_export_import():
-    priv, pub = generate_rsa_keypair()
+    _priv, pub = generate_rsa_keypair()
     pem = export_public_key_pem(pub)
     assert "BEGIN PUBLIC KEY" in pem
     loaded = load_public_key_pem(pem)

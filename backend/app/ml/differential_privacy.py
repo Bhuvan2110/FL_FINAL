@@ -5,12 +5,15 @@ Pure Python: gradient clipping, Gaussian noise, epsilon tracking.
 import math
 import random
 
+from app.ml.fl_algorithms import scalar_avg, weighted_average
 from app.ml.logistic_regression import (
-    compute_gradients, sgd_step, predict_proba, binary_cross_entropy,
-    compute_accuracy, init_weights,
+    binary_cross_entropy,
+    compute_accuracy,
+    compute_gradients,
+    init_weights,
+    predict_proba,
+    sgd_step,
 )
-from app.ml.fl_algorithms import weighted_average, scalar_avg
-
 
 # ── Gradient Clipping ────────────────────────────────────────────────────────────[...]
 
@@ -66,8 +69,7 @@ def compute_epsilon(
         # log moment: alpha * q^2 / (2 * sigma^2) * T (simplified)
         log_moment = alpha * (q ** 2) * n_steps / (2.0 * noise_multiplier ** 2)
         eps_rdp = log_moment + math.log(1 / delta) / (alpha - 1)
-        if eps_rdp < best_eps:
-            best_eps = eps_rdp
+        best_eps = min(best_eps, eps_rdp)
     return round(best_eps, 4)
 
 
@@ -135,8 +137,8 @@ def run_dpsgd(
     noise_multiplier: float = 1.0,
     delta: float = 1e-5,
     batch_size: int = 32,
-    X_val: list = None,
-    y_val: list = None,
+    X_val: list | None = None,
+    y_val: list | None = None,
 ) -> tuple[list[dict], list[float], float, list[dict]]:
     """
     Federated DP-SGD:

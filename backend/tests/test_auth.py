@@ -1,7 +1,9 @@
 """Tests for Auth API endpoints."""
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
@@ -182,10 +184,9 @@ def test_audit_logging_failure():
 
 def test_check_rate_limit_under_threshold():
     """Test that rate limiting allows requests under threshold."""
-    from app.api.auth import _check_rate_limit
-    
     # Reset
     from app.api import auth
+    from app.api.auth import _check_rate_limit
     auth._login_attempts.clear()
     
     # Should not raise

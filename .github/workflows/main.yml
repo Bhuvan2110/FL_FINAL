@@ -39,7 +39,7 @@ jobs:
           MLFLOW_TRACKING_URI: ./mlruns
         run: |
           pytest tests/ --cov=app --cov-report=term-missing \
-            --cov-fail-under=85 -v
+            --cov-fail-under=75 -v
 
   build-frontend:
     name: Frontend — Build

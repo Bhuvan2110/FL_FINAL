@@ -3,13 +3,15 @@ AI Agent Chat API — step-by-step prediction feature collector and conversation
 """
 import os
 import re
+from typing import Any
+
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import Any, Optional, List, Dict
+
 from app.api.dependencies import get_current_user
-from app.db.supabase_client import get_supabase
 from app.api.predict import _load_model
+from app.db.supabase_client import get_supabase
 from app.ml.logistic_regression import predict_proba
 from app.ml.preprocessing import apply_scaler, compute_input_hash
 
@@ -22,17 +24,17 @@ class ChatMessage(BaseModel):
 
 
 class AgentChatRequest(BaseModel):
-    model_id: Optional[str] = None
-    messages: List[ChatMessage]
-    current_feature: Optional[str] = None
-    collected_features: Dict[str, Any] = {}
+    model_id: str | None = None
+    messages: list[ChatMessage]
+    current_feature: str | None = None
+    collected_features: dict[str, Any] = {}
 
 
 def clean_string(s: str) -> str:
     return s.strip().lower().replace(" ", "").replace("_", "").replace(".", "")
 
 
-def generate_gemini_response(prompt: str, api_key: str) -> Optional[str]:
+def generate_gemini_response(prompt: str, api_key: str) -> str | None:
     """Call Gemini 1.5 Flash to generate a conversational response."""
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -83,7 +85,7 @@ async def agent_chat(body: AgentChatRequest, user: dict = Depends(get_current_us
     try:
         model_data = _load_model(body.model_id, sb)
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"Model not found: {str(e)}")
+        raise HTTPException(status_code=404, detail=f"Model not found: {e!s}")
 
     weights = model_data["weights"]
     bias = model_data["bias"]
