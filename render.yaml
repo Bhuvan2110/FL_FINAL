@@ -1,0 +1,78 @@
+services:
+  # ── Backend Web API Service ───────────────────────────────────────────────
+  - type: web
+    name: fl-platform-api
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fl-platform-redis
+          property: connectionString
+
+  # ── Frontend Web UI Static Site ───────────────────────────────────────────
+  - type: static
+    name: fl-platform-ui
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: fl-platform-api
+          property: url
+
+  # ── Celery Background Worker ──────────────────────────────────────────────
+  - type: worker
+    name: fl-platform-worker
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.tasks.celery_app.celery_app worker --loglevel=info
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fl-platform-redis
+          property: connectionString
+
+  # ── Redis Instance ───────────────────────────────────────────────────────
+  - type: redis
+    name: fl-platform-redis
+    region: oregon
+    plan: free
+    maxmemoryPolicy: noeviction
+    ipAllowList: []

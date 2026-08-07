@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ──────────────────────────────────────────────────── */
+@layer base {
+  * { box-sizing: border-box; }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    @apply bg-surface-900 text-slate-100 font-sans antialiased;
+    background: radial-gradient(ellipse at 20% 50%, #0d1f3c 0%, #0a0f1e 50%, #050810 100%);
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-800; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-600 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-brand-500; }
+}
+
+/* ── Glass Card ────────────────────────────────────────────── */
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border border-white/10 backdrop-blur-md;
+    background: rgba(15, 23, 42, 0.7);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(96, 165, 250, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.5), rgba(16, 185, 129, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm
+           bg-brand-600 hover:bg-brand-500 text-white
+           transition-all duration-200 active:scale-95 shadow-lg shadow-brand-900/30;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm
+           bg-surface-700 hover:bg-surface-600 text-slate-200 border border-white/10
+           transition-all duration-200 active:scale-95;
+  }
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm
+           bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30
+           transition-all duration-200 active:scale-95;
+  }
+
+  /* Input */
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-xl bg-surface-700/60 border border-white/10
+           text-slate-100 placeholder-slate-500 font-mono text-sm
+           focus:outline-none focus:border-brand-500/60 focus:ring-1 focus:ring-brand-500/30
+           transition-all duration-200;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply glass-card p-5 flex flex-col gap-1;
+  }
+
+  /* Status badge */
+  .badge-pending   { @apply px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30; }
+  .badge-running   { @apply px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/15 text-blue-400 border border-blue-500/30 animate-pulse; }
+  .badge-completed { @apply px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30; }
+  .badge-failed    { @apply px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/15 text-red-400 border border-red-500/30; }
+
+  /* Algo badge */
+  .badge-fedavg    { @apply px-2 py-0.5 rounded-md text-xs font-mono bg-blue-500/20 text-blue-300; }
+  .badge-fedprox   { @apply px-2 py-0.5 rounded-md text-xs font-mono bg-purple-500/20 text-purple-300; }
+  .badge-scaffold  { @apply px-2 py-0.5 rounded-md text-xs font-mono bg-emerald-500/20 text-emerald-300; }
+  .badge-dpsgd     { @apply px-2 py-0.5 rounded-md text-xs font-mono bg-rose-500/20 text-rose-300; }
+  .badge-central   { @apply px-2 py-0.5 rounded-md text-xs font-mono bg-amber-500/20 text-amber-300; }
+
+  /* Table */
+  .data-table { @apply w-full text-sm; }
+  .data-table thead { @apply text-xs text-slate-400 uppercase tracking-wider; }
+  .data-table thead th { @apply px-4 py-3 text-left border-b border-white/10; }
+  .data-table tbody tr { @apply border-b border-white/5 transition-colors; }
+  .data-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+  .data-table tbody td { @apply px-4 py-3; }
+
+  /* Page wrapper */
+  .page-wrapper { @apply flex-1 overflow-y-auto p-6 animate-fade-in; }
+  .page-title { @apply text-2xl font-bold text-slate-100 mb-1; }
+  .page-subtitle { @apply text-sm text-slate-400 mb-6; }
+}
+
+/* ── Chart tooltip ─────────────────────────────────────────── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Drop zone ─────────────────────────────────────────────── */
+.drop-zone {
+  @apply border-2 border-dashed border-white/20 rounded-2xl p-12 text-center
+         transition-all duration-200 cursor-pointer;
+}
+.drop-zone:hover, .drop-zone.active {
+  @apply border-brand-500/60 bg-brand-500/5;
+}
+
+/* ── Heatmap cells ─────────────────────────────────────────── */
+.heatmap-cell {
+  @apply flex items-center justify-center rounded-lg font-mono text-sm font-bold;
+  transition: opacity 0.2s;
+}
+
+/* ── Glow effects ──────────────────────────────────────────── */
+.glow-blue  { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+.glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+.glow-purple{ box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
